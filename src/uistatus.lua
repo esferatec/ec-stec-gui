@@ -124,7 +124,7 @@ function Dialog:onShow()
   LabelStatus.text = LabelStatus.text .. "\n\n\t start ..."
 
   LabelStatus.text = LabelStatus.text .. "\n\n\t compile script"
-  LabelStatus.text = LabelStatus.text .. compileScript()
+  LabelStatus.text = LabelStatus.text .. compileScript(self.iconfile, self.embededmodules, self.outputfile, self.scriptdirectory, self.scriptfile)
 
   LabelStatus.text = LabelStatus.text .. "\n\n\t set product name"
   LabelStatus.text = LabelStatus.text .. setProductName(self.outputfile, self.productname)

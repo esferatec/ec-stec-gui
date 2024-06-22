@@ -5,16 +5,10 @@ local sys = require("sys")
 local fct = {}
 
 function fct.compilescript(icon, modules, output, directory, script)
-  if not isstring(icon) then return false end
-  if not isstring(modules) then return false end
   if not isstring(output) then return false end
-  if not isstring(directory) then return false end
   if not isstring(script) then return false end
 
-  if string.iswhitespace(icon) then return false end
-  if string.iswhitespace(modules) then return false end
   if string.iswhitespace(output) then return false end
-  if string.iswhitespace(directory) then return false end
   if string.iswhitespace(script) then return false end
 
   local command = string.format('rtc -w -i %s -l%s -o %s %s %s\n', icon, modules, output, directory, script)
