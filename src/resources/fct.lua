@@ -6,11 +6,19 @@ local ui = require("ui")
 local fct = {}
 
 function fct.compileScript(icon, modules, output, directory, script)
- --local command = string.format('rtc -w -i "%s" -l"%s" -o "%s" %s "%s"\n', icon, modules, output, directory, script)
+  if not isstring(icon) then return false end
+  if not isstring(modules) then return false end
+  if not isstring(output) then return false end
+  if not isstring(directory) then return false end
+  if not isstring(script) then return false end
 
- local command = string.format('rtc -w -i %s -l%s -o %s %s %s\n', icon, modules, output, directory, script)
+  if string.iswhitespace(icon) then return false end
+  if string.iswhitespace(modules) then return false end
+  if string.iswhitespace(output) then return false end
+  if string.iswhitespace(directory) then return false end
+  if string.iswhitespace(script) then return false end
 
-  sys.clipboard = command
+  local command = string.format('rtc -w -i %s -l%s -o %s %s %s\n', icon, modules, output, directory, script)
   local success, result = pcall(sys.cmd, command)
   return success == result
 end
@@ -64,11 +72,11 @@ function fct.setFileDescription(file, description)
 end
 
 function fct.setLegalCopyright(file, copyright)
-  if not isstring(file) then return false, false end
-  if not isstring(copyright) then return false, false end
+  if not isstring(file) then return false end
+  if not isstring(copyright) then return false end
 
-  if string.iswhitespace(file) then return false, false end
-  if string.iswhitespace(copyright) then return false, false end
+  if string.iswhitespace(file) then return false end
+  if string.iswhitespace(copyright) then return false end
 
   local command = string.format('rcedit %s --set-version-string "LegalCopyright" "%s"\n', file, copyright)
   local success, result = pcall(sys.cmd, command)
