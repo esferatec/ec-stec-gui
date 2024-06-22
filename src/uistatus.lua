@@ -1,10 +1,14 @@
 require("common.extension")
+
 local ui          = require("ui")
 
 local gm          = require("managers.gm") -- geometry manager
 local wm          = require("managers.wm") -- widget manager
 
 local fct         = require("resources.fct")
+
+local DONE        = "\t\t done"
+local ERROR       = "\t\t error"
 
 --#region Dialog
 
@@ -14,7 +18,7 @@ local Dialog      = ui.Window("ecSTEC - Status", "raw", 680, 480)
 
 --#region Managers
 
-Dialog.GM         = gm.GeometryManager():ColumnLayout(Dialog, gm.DIRECTION.top, 40, 0, 0, 680, 480)
+Dialog.GM         = gm.GeometryManager():ColumnLayout(Dialog, gm.DIRECTION.Top, 40, 0, 0, 680, 480)
 Dialog.WM         = wm.WidgetManager()
 
 --#endregion
@@ -45,62 +49,60 @@ Dialog.WM:add(ButtonClose, "ButtonClose")
 local function compileScript(iconfile, embededmodules, outputfile, scriptdirectory, scriptfile)
   local task = sys.Task(fct.compileScript)
   if await(task, iconfile, embededmodules, outputfile, scriptdirectory, scriptfile) then
-    return "\t\t done"
+    return DONE
   else
-    return "\t\t error"
+    return ERROR
   end
 end
 
 local function setProductName(file, productname)
   local task = sys.Task(fct.setProductName)
   if await(task, file, productname) then
-    return "\t\t done"
+    return DONE
   else
-    return "\t\t error"
+    return ERROR
   end
 end
 
 local function setProductVersion(file, productversion)
   local task = sys.Task(fct.setProductVersion)
   if await(task, file, productversion) then
-    return "\t\t done"
+    return DONE
   else
-    return "\t\t error"
+    return ERROR
   end
 end
 
 local function setFileDescription(file, filedescription)
   local task = sys.Task(fct.setFileDescription)
   if await(task, file, filedescription) then
-    return "\t\t done"
+    return DONE
   else
-    return "\t\t error"
+    return ERROR
   end
 end
 
 local function setFileVersion(file, fileversion)
   task = sys.Task(fct.setFileVersion)
   if await(task, file, fileversion) then
-    return "\t\t done"
+    return DONE
   else
-    return "\t\t error"
+    return ERROR
   end
 end
 
 local function setLegalCopyright(file, legalcopyright)
   local task = sys.Task(fct.setLegalCopyright)
   if await(task, file, legalcopyright) then
-    return "\t done"
+    return DONE
   else
-    return "\t error"
+    return ERROR
   end
 end
 
---#region Events
+--#endregion
 
-function ButtonClose:onClick()
-  Dialog:hide()
-end
+--#region Events
 
 function Dialog:onCreate()
   Dialog.GM:apply()
@@ -141,6 +143,10 @@ function Dialog:onShow()
 
   LabelStatus.text = LabelStatus.text .. "\n\n\t ... end"
   ButtonClose.visible = true
+end
+
+function ButtonClose:onClick()
+  Dialog:hide()
 end
 
 --#endregion

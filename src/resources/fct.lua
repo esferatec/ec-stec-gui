@@ -1,7 +1,6 @@
 require("common.extension")
 
 local sys = require("sys")
-local ui = require("ui")
 
 local fct = {}
 

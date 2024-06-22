@@ -22,6 +22,21 @@ db:create()
 
 --#endregion
 
+--#region local functions
+
+local function getListEmbededModules()
+  local result = {}
+  for box in each(win.WM_MODULES.children) do
+    if box.checked == true then
+      table.insert(result, box.text)
+    end
+  end
+
+  return table.concat(result, " -l")
+end
+
+--#endregion
+
 --#region window methods
 
 function win:updatetitle()
@@ -260,6 +275,28 @@ function win.WM.children.ButtonDelete:onClick()
   win:updatestatus()
 end
 
+function win.WM.children.ButtonGenerate:onClick()
+  if db.record == nil then return end
+
+  local dlg_status = require("uistatus")
+  dlg_status.parent = win
+
+  dlg_status.scriptfile = win.WM.children.EntryScriptFile.text
+  dlg_status.scriptdirectory = win.WM.children.EntryScriptDirectory.text
+  dlg_status.iconfile = win.WM.children.EntryIconFile.text
+  dlg_status.outputfile = win.WM.children.EntryOutputFile.text
+
+  dlg_status.embededmodules = getListEmbededModules()
+
+  dlg_status.productname = win.WM.children.EntryProductName.text
+  dlg_status.productversion = win.WM.children.EntryProductVersion.text
+  dlg_status.filedescription = win.WM.children.EntryFileDescription.text
+  dlg_status.fileversion = win.WM.children.EntryFileVersion.text
+  dlg_status.legalcopyright = win.WM.children.EntryLegalCopyright.text
+
+  win:showmodal(dlg_status)
+end
+
 --#endregion
 
 --#region window events
@@ -295,38 +332,5 @@ function win:onKey(key)
 end
 
 --#endregion
-
-local function getListEmbededModules()
-  local result = {}
-  for box in each(win.WM_MODULES.children) do
-    if box.checked == true then
-      table.insert(result, box.text)
-    end
-  end
-
-  return table.concat(result, " -l")
-end
-
-function win.WM.children.ButtonGenerate:onClick()
-  if db.record == nil then return end
-
-  local dlg_status = require("uistatus")
-  dlg_status.parent = win
-
-  dlg_status.scriptfile = win.WM.children.EntryScriptFile.text
-  dlg_status.scriptdirectory = win.WM.children.EntryScriptDirectory.text
-  dlg_status.iconfile = win.WM.children.EntryIconFile.text
-  dlg_status.outputfile = win.WM.children.EntryOutputFile.text
-
-  dlg_status.embededmodules = getListEmbededModules()
-
-  dlg_status.productname = win.WM.children.EntryProductName.text
-  dlg_status.productversion = win.WM.children.EntryProductVersion.text
-  dlg_status.filedescription = win.WM.children.EntryFileDescription.text
-  dlg_status.fileversion = win.WM.children.EntryFileVersion.text
-  dlg_status.legalcopyright = win.WM.children.EntryLegalCopyright.text
-
-  win:showmodal(dlg_status)
-end
 
 ui.run(win):wait()
