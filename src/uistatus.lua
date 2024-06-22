@@ -47,7 +47,7 @@ Dialog.WM:add(ButtonClose, "ButtonClose")
 --#region Functions
 
 local function compileScript(iconfile, embededmodules, outputfile, scriptdirectory, scriptfile)
-  local task = sys.Task(fct.compileScript)
+  local task = sys.Task(fct.compilescript)
   if await(task, iconfile, embededmodules, outputfile, scriptdirectory, scriptfile) then
     return DONE
   else
@@ -56,7 +56,7 @@ local function compileScript(iconfile, embededmodules, outputfile, scriptdirecto
 end
 
 local function setProductName(file, productname)
-  local task = sys.Task(fct.setProductName)
+  local task = sys.Task(fct.setproductname)
   if await(task, file, productname) then
     return DONE
   else
@@ -65,7 +65,7 @@ local function setProductName(file, productname)
 end
 
 local function setProductVersion(file, productversion)
-  local task = sys.Task(fct.setProductVersion)
+  local task = sys.Task(fct.setproductversion)
   if await(task, file, productversion) then
     return DONE
   else
@@ -74,7 +74,7 @@ local function setProductVersion(file, productversion)
 end
 
 local function setFileDescription(file, filedescription)
-  local task = sys.Task(fct.setFileDescription)
+  local task = sys.Task(fct.setfiledescription)
   if await(task, file, filedescription) then
     return DONE
   else
@@ -83,7 +83,7 @@ local function setFileDescription(file, filedescription)
 end
 
 local function setFileVersion(file, fileversion)
-  task = sys.Task(fct.setFileVersion)
+  task = sys.Task(fct.setfileversion)
   if await(task, file, fileversion) then
     return DONE
   else
@@ -92,7 +92,7 @@ local function setFileVersion(file, fileversion)
 end
 
 local function setLegalCopyright(file, legalcopyright)
-  local task = sys.Task(fct.setLegalCopyright)
+  local task = sys.Task(fct.setlegalcopyright)
   if await(task, file, legalcopyright) then
     return DONE
   else

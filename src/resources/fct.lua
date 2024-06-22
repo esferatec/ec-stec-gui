@@ -4,7 +4,7 @@ local sys = require("sys")
 
 local fct = {}
 
-function fct.compileScript(icon, modules, output, directory, script)
+function fct.compilescript(icon, modules, output, directory, script)
   if not isstring(icon) then return false end
   if not isstring(modules) then return false end
   if not isstring(output) then return false end
@@ -22,7 +22,7 @@ function fct.compileScript(icon, modules, output, directory, script)
   return success == result
 end
 
-function fct.setFileVersion(file, version)
+function fct.setfileversion(file, version)
   if not isstring(file) then return false end
   if not isstring(version) then return false end
 
@@ -34,7 +34,7 @@ function fct.setFileVersion(file, version)
   return success == result
 end
 
-function fct.setProductVersion(file, version)
+function fct.setproductversion(file, version)
   if not isstring(file) then return false end
   if not isstring(version) then return false end
 
@@ -46,7 +46,7 @@ function fct.setProductVersion(file, version)
   return success == result
 end
 
-function fct.setProductName(file, name)
+function fct.setproductname(file, name)
   if not isstring(file) then return false end
   if not isstring(name) then return false end
 
@@ -58,7 +58,7 @@ function fct.setProductName(file, name)
   return success == result
 end
 
-function fct.setFileDescription(file, description)
+function fct.setfiledescription(file, description)
   if not isstring(file) then return false end
   if not isstring(description) then return false end
 
@@ -70,7 +70,7 @@ function fct.setFileDescription(file, description)
   return success == result
 end
 
-function fct.setLegalCopyright(file, copyright)
+function fct.setlegalcopyright(file, copyright)
   if not isstring(file) then return false end
   if not isstring(copyright) then return false end
 
