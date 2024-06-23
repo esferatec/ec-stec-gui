@@ -9,4 +9,3 @@ It depends on LuaRT [rtc](https://github.com/samyeyo/rtc) and Electron [rcedit](
 
 ![](img/screenshot_183052.png)
 
-![](img/screenshot_073357.png)
