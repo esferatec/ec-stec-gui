@@ -8,5 +8,8 @@ ecSTECGUI is a graphical user interface that allows you to create standalone exe
 >* rtc is a LuaRT script to executable compiler
 >* rcedit is a command line tool to edit resources of exe
 
+> [!CAUTION]
+> This application is still in the development stage.
+
 ![](img/screenshot_183052.png)
 
