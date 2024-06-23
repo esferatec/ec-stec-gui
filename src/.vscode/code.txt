@@ -1,2 +1,0 @@
-
-rtc.exe -i ectasks.icon -w ectasks.lua .

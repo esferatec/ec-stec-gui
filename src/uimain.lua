@@ -276,4 +276,6 @@ Window.GM_PRODUCT_ENTRY:change("fontsize", 10)
 Window.GM_FILE_ENTRY:change("fontsize", 10)
 Window.GM_SCRIPT_ENTRY:change("fontsize", 10)
 
+ButtonSave.tooltip = "F4"
+
 return Window

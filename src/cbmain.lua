@@ -12,6 +12,7 @@ local app          = require("resources.app")
 local win          = require("uimain")
 win:center()
 win:status()
+win:loadicon("ecstecgui.ico")
 
 --#endregion
 
