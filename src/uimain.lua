@@ -284,7 +284,7 @@ Window.VM:add(EntryIconFile, "text", isValidIconFile, "Please enter a ico file."
 Window.VM:add(EntryIconFile, "text", isValidFile, "Please enter a icon file that exists.")
 
 Window.VM:add(EntryOutputFile, "text", isRequired, "Please enter a output file.")
-Window.VM:add(EntryIconFile, "text", isValidOutputFile, "Please enter a exe file.")
+Window.VM:add(EntryOutputFile, "text", isValidOutputFile, "Please enter a exe file.")
 
 --#endregion
 
