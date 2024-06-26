@@ -13,3 +13,4 @@ ecSTECGUI is a graphical user interface database that allows you to create stand
 
 ![](img/screenshot_183052.png)
 
+![](img/screenshot_073357.png)

@@ -2,6 +2,7 @@ require("common.extension")
 
 local ui = require("ui")
 local uiextension = require("modules.uiextension")
+local sys = require("sys")
 
 local dm = require("managers.dm") -- data manager
 local gm = require("managers.gm") -- geometry manager
@@ -17,6 +18,36 @@ local function isRequired(value)
   return not string.isnil(value) and not string.isempty(value)
 end
 
+local function isValidFile(value)
+  value = string.trim(value)
+  if string.isempty(value) then return true end
+  return sys.File(value).exists
+end
+
+local function isValidDirectory(value)
+  value = string.trim(value)
+  if string.isempty(value) then return true end
+  return sys.Directory(value).exists
+end
+
+local function isValidScriptFile(value)
+  value = string.trim(value)
+  if string.isempty(value) then return true end
+  return string.match(".lua .wlua", sys.File(value).extension)
+end
+
+local function isValidIconFile(value)
+  value = string.trim(value)
+  if string.isempty(value) then return true end
+  return string.match(".ico", sys.File(value).extension)
+end
+
+local function isValidOutputFile(value)
+  value = string.trim(value)
+  if string.isempty(value) then return true end
+  return string.match(".exe", sys.File(value).extension)
+end
+
 --#endregion
 
 --#region Menu
@@ -29,6 +60,7 @@ local MenuBurger = ui.Menu("Setup", "Help", "About", "", "Exit")
 
 local Window     = ui.Window("ecSTEC", "single", 700, 550)
 Window.bgcolor   = 0xa3c2c2
+Window.modified  = false
 Window.menu      = ui.Menu()
 Window.menu:add("|||", MenuBurger)
 
@@ -241,8 +273,18 @@ Window.KM:add(ButtonGenerate, "VK_F7")
 --#region ValidationManager
 
 Window.VM:add(EntryProjectName, "text", isRequired, "Please enter a project name.")
+
 Window.VM:add(EntryScriptFile, "text", isRequired, "Please enter a script file.")
+Window.VM:add(EntryScriptFile, "text", isValidScriptFile, "Please enter a lua or wlua file.")
+Window.VM:add(EntryScriptFile, "text", isValidFile, "Please enter a script file that exists.")
+
+Window.VM:add(EntryScriptDirectory, "text", isValidDirectory, "Please enter a script directory that exists.")
+
+Window.VM:add(EntryIconFile, "text", isValidIconFile, "Please enter a ico file.")
+Window.VM:add(EntryIconFile, "text", isValidFile, "Please enter a icon file that exists.")
+
 Window.VM:add(EntryOutputFile, "text", isRequired, "Please enter a output file.")
+Window.VM:add(EntryIconFile, "text", isValidOutputFile, "Please enter a exe file.")
 
 --#endregion
 
@@ -272,10 +314,39 @@ Window.DM:add("modulewebview", CheckboxModuleWebview, "checked", false)
 
 --#endregion
 
+--#region Properties
+
 Window.GM_PRODUCT_ENTRY:change("fontsize", 10)
 Window.GM_FILE_ENTRY:change("fontsize", 10)
 Window.GM_SCRIPT_ENTRY:change("fontsize", 10)
 
+ButtonFirst.tooltip = "HOME"
+ButtonPrevious.tooltip = "RIOR"
+ButtonGoto.tooltip = "F2"
+ButtonNext.tooltip = "NEXT"
+ButtonLast.tooltip = "END"
+ButtonNew.tooltip = "F3"
 ButtonSave.tooltip = "F4"
+ButtonCancel.tooltip = "F5"
+ButtonDelete.tooltip = "F6"
+ButtonGenerate.tooltip = "F7"
+
+--#endregion
+
+--#region Events
+
+Window.GM_PRODUCT_ENTRY:change("onChange", function(self)
+  ButtonSave.fontstyle = self.modified and { bold = true } or { bold = false }
+end)
+
+Window.GM_FILE_ENTRY:change("onChange", function(self)
+  ButtonSave.fontstyle = self.modified and { bold = true } or { bold = false }
+end)
+
+Window.GM_MODULE_CHECKBOX:change("onClick", function(self)
+  ButtonSave.fontstyle = { bold = true }
+end)
+
+--#endregion
 
 return Window

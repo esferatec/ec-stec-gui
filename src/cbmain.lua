@@ -12,7 +12,6 @@ local app          = require("resources.app")
 local win          = require("uimain")
 win:center()
 win:status()
-win:loadicon("ecstecgui.ico")
 
 --#endregion
 
@@ -211,13 +210,6 @@ function win.WM.children.ButtonNew:onClick()
 end
 
 function win.WM.children.ButtonSave:onClick()
-  --if ui.confirm("Do you want to save the changes?", app.TITLE.confirmation) ~= "yes" then
-  --  win:updatedata()
-  --  win:updatewidget()
-  --  win:updatestatus()
-  --  return
-  --end
-
   win.VM:apply()
 
   if not win.VM.isvalid then
@@ -246,10 +238,6 @@ function win.WM.children.ButtonSave:onClick()
 end
 
 function win.WM.children.ButtonCancel:onClick()
-  --if ui.confirm("Do you want to discard the changes?", app.TITLE.confirmation) ~= "yes" then
-  --  return
-  --end
-
   if win.DM.key == -1 then
     db.record = 1
   end
@@ -261,10 +249,6 @@ end
 
 function win.WM.children.ButtonDelete:onClick()
   if db.record == nil then return end
-
-  --if ui.confirm("Do you want to delete the project?", app.TITLE.confirmation) ~= "yes" then
-  --  return
-  --end
 
   win.DM:delete()
 
