@@ -343,6 +343,10 @@ Window.GM_FILE_ENTRY:change("onChange", function(self)
   ButtonSave.fontstyle = self.modified and { bold = true } or { bold = false }
 end)
 
+Window.GM_SCRIPT_ENTRY:change("onChange", function(self)
+  ButtonSave.fontstyle = self.modified and { bold = true } or { bold = false }
+end)
+
 Window.GM_MODULE_CHECKBOX:change("onClick", function(self)
   ButtonSave.fontstyle = { bold = true }
 end)

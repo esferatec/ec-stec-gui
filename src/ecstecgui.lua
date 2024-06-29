@@ -33,7 +33,8 @@ end
 dofile(embed and embed.File("cbmain.lua").fullpath or "cbmain.lua")
 
 if sys.error then
-  ui.error(sys.error, app.TITLE.error)
+ -- ui.error(sys.error, app.TITLE.error)
+ sys.exit()
 end
 
 sys.exit()
