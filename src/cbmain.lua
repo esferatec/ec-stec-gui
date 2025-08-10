@@ -9,7 +9,7 @@ local app          = require("resources.app")
 
 --#region win initialization
 
-local win          = require("uimain")
+local win = require("uimain")
 win:center()
 win:status()
 

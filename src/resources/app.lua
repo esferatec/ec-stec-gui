@@ -3,9 +3,9 @@ local sys = require("sys")
 local app = {}
 
 app.NAME = "ecSTECGUI"
-app.VERSION = "0.1.0"
+app.VERSION = "0.1.5"
 app.WEBSITE = "https://github.com/esferatec/ec-stec-gui"
-app.COPYRIGHT = "(c) 2024"
+app.COPYRIGHT = "(c) 2025"
 app.DEVELOPER = "esferatec"
 
 app.ARGUMENT = arg[1]

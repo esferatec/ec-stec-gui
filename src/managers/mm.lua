@@ -1,5 +1,5 @@
 -- Defines a menu management module.
-local mm = {} -- version 2024.01
+local mm = {} -- version 2025.04
 
 -- Checks if the parameter is a valid child widget.
 -- isValidChild(parameter: any) -> boolean

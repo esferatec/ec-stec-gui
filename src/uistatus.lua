@@ -2,6 +2,8 @@ require("common.extension")
 
 local ui          = require("ui")
 
+local sys         = require("sys")
+
 local gm          = require("managers.gm") -- geometry manager
 local wm          = require("managers.wm") -- widget manager
 
@@ -9,6 +11,7 @@ local fct         = require("resources.fct")
 
 local DONE        = "\t\t done"
 local ERROR       = "\t\t error"
+local SKIPPED     = "\t\t skipped"
 
 --#region Dialog
 
@@ -47,8 +50,7 @@ Dialog.WM:add(ButtonClose, "ButtonClose")
 --#region Functions
 
 local function compileScript(iconfile, embededmodules, outputfile, scriptdirectory, scriptfile)
-  local task = sys.Task(fct.compilescript)
-  if await(task, iconfile, embededmodules, outputfile, scriptdirectory, scriptfile) then
+  if fct.compilescript(iconfile, embededmodules, outputfile, scriptdirectory, scriptfile) then
     return DONE
   else
     return ERROR
@@ -56,8 +58,10 @@ local function compileScript(iconfile, embededmodules, outputfile, scriptdirecto
 end
 
 local function setProductName(file, productname)
-  local task = sys.Task(fct.setproductname)
-  if await(task, file, productname) then
+  if string.isempty(productname) then
+    return SKIPPED
+  end
+  if fct.setproductname(file, productname) then
     return DONE
   else
     return ERROR
@@ -65,8 +69,10 @@ local function setProductName(file, productname)
 end
 
 local function setProductVersion(file, productversion)
-  local task = sys.Task(fct.setproductversion)
-  if await(task, file, productversion) then
+  if string.isempty(productversion) then
+    return SKIPPED
+  end
+  if fct.setproductversion(file, productversion) then
     return DONE
   else
     return ERROR
@@ -74,8 +80,10 @@ local function setProductVersion(file, productversion)
 end
 
 local function setFileDescription(file, filedescription)
-  local task = sys.Task(fct.setfiledescription)
-  if await(task, file, filedescription) then
+  if string.isempty(filedescription) then
+    return SKIPPED
+  end
+  if fct.setfiledescription(file, filedescription) then
     return DONE
   else
     return ERROR
@@ -83,8 +91,10 @@ local function setFileDescription(file, filedescription)
 end
 
 local function setFileVersion(file, fileversion)
-  task = sys.Task(fct.setfileversion)
-  if await(task, file, fileversion) then
+  if string.isempty(fileversion) then
+    return SKIPPED
+  end
+  if fct.setfileversion(file, fileversion) then
     return DONE
   else
     return ERROR
@@ -92,8 +102,10 @@ local function setFileVersion(file, fileversion)
 end
 
 local function setLegalCopyright(file, legalcopyright)
-  local task = sys.Task(fct.setlegalcopyright)
-  if await(task, file, legalcopyright) then
+  if string.isempty(legalcopyright) then
+    return SKIPPED
+  end
+  if fct.setlegalcopyright(file, legalcopyright) then
     return DONE
   else
     return ERROR
@@ -121,27 +133,30 @@ function Dialog:onShow()
   LabelStatus.fontstyle.bold = true
 
   ButtonClose.visible = false
+
   LabelStatus.text = LabelStatus.text .. "\n\n\t start ..."
 
-  LabelStatus.text = LabelStatus.text .. "\n\n\t compile script"
-  LabelStatus.text = LabelStatus.text .. compileScript(self.iconfile, self.embededmodules, self.outputfile, self.scriptdirectory, self.scriptfile)
+  LabelStatus.text = LabelStatus.text .. "\n\n\t compile script \t"
+  LabelStatus.text = LabelStatus.text ..
+      compileScript(self.iconfile, self.embededmodules, self.outputfile, self.scriptdirectory, self.scriptfile)
 
-  LabelStatus.text = LabelStatus.text .. "\n\n\t set product name"
+  LabelStatus.text = LabelStatus.text .. "\n\n\t set product name \t"
   LabelStatus.text = LabelStatus.text .. setProductName(self.outputfile, self.productname)
 
-  LabelStatus.text = LabelStatus.text .. "\n\n\t set product version"
+  LabelStatus.text = LabelStatus.text .. "\n\n\t set product version "
   LabelStatus.text = LabelStatus.text .. setProductVersion(self.outputfile, self.productversion)
 
-  LabelStatus.text = LabelStatus.text .. "\n\n\t set file description"
+  LabelStatus.text = LabelStatus.text .. "\n\n\t set file description "
   LabelStatus.text = LabelStatus.text .. setFileDescription(self.outputfile, self.filedescription)
 
-  LabelStatus.text = LabelStatus.text .. "\n\n\t set file version"
+  LabelStatus.text = LabelStatus.text .. "\n\n\t set file version \t"
   LabelStatus.text = LabelStatus.text .. setFileVersion(self.outputfile, self.fileversion)
 
-  LabelStatus.text = LabelStatus.text .. "\n\n\t set legal copyright"
+  LabelStatus.text = LabelStatus.text .. "\n\n\t set legal copyright "
   LabelStatus.text = LabelStatus.text .. setLegalCopyright(self.outputfile, self.legalcopyright)
 
   LabelStatus.text = LabelStatus.text .. "\n\n\t ... end"
+
   ButtonClose.visible = true
 end
 

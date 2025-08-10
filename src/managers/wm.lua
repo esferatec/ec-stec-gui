@@ -1,5 +1,5 @@
 -- Defines a widget management module.
-local wm = {} -- version 2024.01
+local wm = {} -- version 2025.04
 
 -- Checks if the parameter is a valid child widget.
 -- isValidChild(parameter: any) -> boolean

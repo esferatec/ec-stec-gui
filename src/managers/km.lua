@@ -1,5 +1,5 @@
 -- Defines a key management module.
-local km = {} -- version 2024.01
+local km = {} -- version 2025.04
 
 -- Defines specific constants.
 km.MODIFIERKEY = { Alt = "VK_MENU", Ctrl = "VK_CONTROL", Shift = "VK_SHIFT" }

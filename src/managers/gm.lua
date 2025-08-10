@@ -11,7 +11,7 @@ local SingleLayout = require("managers.layouts.singlelayout")
 local TopLayout = require("managers.layouts.toplayout")
 
 -- Defines a geometry management module.
-local gm = {} -- version 2024.01
+local gm = {} -- version 2025.04
 
 -- Defines specific constants.
 gm.RESIZE = { X = 1, Y = 2, Both = 3, None = 4 }

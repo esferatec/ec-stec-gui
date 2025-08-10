@@ -2,9 +2,9 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Run Lua",
+            "label": "Run LuaRT",
             "type": "shell",
-            "command": "C:\\Lua\\lua",
+            "command": "C:\\LuaRT\\wluart.exe",
             "args": [
                 "${file}"
             ],
@@ -15,9 +15,9 @@
         }
 
         {
-            "label": "Run LuaRT",
+            "label": "Run LuaRT wrtc",
             "type": "shell",
-            "command": "C:\\LuaRT\\wluart.exe",
+            "command": "C:\\LuaRT\\wrtc.exe",
             "args": [
                 "${file}"
             ],
@@ -25,6 +25,6 @@
                 "kind": "build",
                 "isDefault": false
             }
-        }
+        }        
     ]
 }

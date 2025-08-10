@@ -29,6 +29,10 @@ function Project:create()
     "modulenet" TEXT,
     "modulesqlite" TEXT,
     "modulewebview" TEXT,
+    "modulesysutils" TEXT,
+    "modulekeyboard" TEXT,
+    "moduleserial" TEXT,
+    "modulec" TEXT,
     PRIMARY KEY("id" AUTOINCREMENT)
   );]])
 end

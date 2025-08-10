@@ -56,23 +56,15 @@ function uidialogs.textentrydialog(parent, title, message, text, width, height)
   local entryValue = ui.Entry(windowDialog, text or "", 10, 50, (windowDialog.width - 20))
 
   parent:showmodal(windowDialog)
+  windowDialog:center()
   entryValue:show()
+  ui.run(windowDialog):wait()
 
-  repeat
-    ui.update()
-    windowDialog:center()
-    windowDialog:tofront()
-
-    if windowDialog:isconfirmed() then
-      if entryValue.modified then
-        result = #entryValue.text > 0 and tostring(entryValue.text) or nil
-      else
-        result = nil
-      end
-    else
-      result = nil
-    end
-  until not windowDialog.visible
+  if windowDialog:isconfirmed() then
+    result = #entryValue.text > 0 and tostring(entryValue.text) or nil
+  else
+    result = nil
+  end
 
   return result
 end
@@ -97,23 +89,15 @@ function uidialogs.numberentrydialog(parent, title, message, value, width, heigh
   end
 
   parent:showmodal(windowDialog)
+  windowDialog:center()
   entryValue:show()
+  ui.run(windowDialog):wait()
 
-  repeat
-    ui.update()
-    windowDialog:center()
-    windowDialog:tofront()
-
-    if windowDialog:isconfirmed() then
-      if entryValue.modified then
-        result = #entryValue.text > 0 and tostring(entryValue.text) or nil
-      else
-        result = nil
-      end
-    else
-      result = nil
-    end
-  until not windowDialog.visible
+  if windowDialog:isconfirmed() then
+    result = #entryValue.text > 0 and tostring(entryValue.text) or nil
+  else
+    result = nil
+  end
 
   return result
 end
@@ -133,23 +117,15 @@ function uidialogs.passwordentrydialog(parent, title, message, width, height)
   entryValue.masked = true
 
   parent:showmodal(windowDialog)
+  windowDialog:center()
   entryValue:show()
+  ui.run(windowDialog):wait()
 
-  repeat
-    ui.update()
-    windowDialog:center()
-    windowDialog:tofront()
-
-    if windowDialog:isconfirmed() then
-      if entryValue.modified then
-        result = #entryValue.text > 0 and tostring(entryValue.text) or nil
-      else
-        result = nil
-      end
-    else
-      result = nil
-    end
-  until not windowDialog.visible
+  if windowDialog:isconfirmed() then
+    result = #entryValue.text > 0 and tostring(entryValue.text) or nil
+  else
+    result = nil
+  end
 
   return result
 end
@@ -168,19 +144,15 @@ function uidialogs.choicetextdialog(parent, title, message, choices, width, heig
   local listChoices = ui.List(windowDialog, choices, 10, 50, (windowDialog.width - 20), (windowDialog.height - 40 - 60))
 
   parent:showmodal(windowDialog)
+  windowDialog:center()
   listChoices.selected = listChoices.items[1]
+  ui.run(windowDialog):wait()
 
-  repeat
-    ui.update()
-    windowDialog:center()
-    windowDialog:tofront()
-
-    if windowDialog:isconfirmed() then
-      result = listChoices.selected and listChoices.selected.text or nil
-    else
-      result = nil
-    end
-  until not windowDialog.visible
+  if windowDialog:isconfirmed() then
+    result = listChoices.selected and listChoices.selected.text or nil
+  else
+    result = nil
+  end
 
   return result
 end
@@ -199,19 +171,15 @@ function uidialogs.choiceindexdialog(parent, title, message, choices, width, hei
   local listChoices = ui.List(windowDialog, choices, 10, 50, (windowDialog.width - 20), (windowDialog.height - 40 - 60))
 
   parent:showmodal(windowDialog)
+  windowDialog:center()
   listChoices.selected = listChoices.items[1]
+  ui.run(windowDialog):wait()
 
-  repeat
-    ui.update()
-    windowDialog:center()
-    windowDialog:tofront()
-
-    if windowDialog:isconfirmed() then
-      result = listChoices.selected and listChoices.selected.index or nil
-    else
-      result = nil
-    end
-  until not windowDialog.visible
+  if windowDialog:isconfirmed() then
+    result = listChoices.selected and listChoices.selected.index or nil
+  else
+    result = nil
+  end
 
   return result
 end
@@ -233,23 +201,15 @@ function uidialogs.texteditdialog(parent, title, message, text, width, height)
   editValue:append(text or "")
 
   parent:showmodal(windowDialog)
+  windowDialog:center()
   editValue:show()
+  ui.run(windowDialog):wait()
 
-  repeat
-    ui.update()
-    windowDialog:center()
-    windowDialog:tofront()
-
-    if windowDialog:isconfirmed() then
-      if editValue.modified then
-        result = #editValue.text > 0 and tostring(editValue.text) or nil
-      else
-        result = nil
-      end
-    else
-      result = nil
-    end
-  until not windowDialog.visible
+  if windowDialog:isconfirmed() then
+    result = #editValue.text > 0 and tostring(editValue.text) or nil
+  else
+    result = nil
+  end
 
   return result
 end
@@ -268,21 +228,17 @@ function uidialogs.calendardialog(parent, title, message, select, width, height)
   local calendarMonth = ui.Calendar(windowDialog, 10, 50, (windowDialog.width - 20), (windowDialog.height - 40 - 60))
 
   parent:showmodal(windowDialog)
+  windowDialog:center()
   if select then
     calendarMonth.selected = select
   end
+  ui.run(windowDialog):wait()
 
-  repeat
-    ui.update()
-    windowDialog:center()
-    windowDialog:tofront()
-
-    if windowDialog:isconfirmed() then
-      result = calendarMonth.selected --and listChoices.selected.index or nil
-    else
-      result = nil
-    end
-  until not windowDialog.visible
+  if windowDialog:isconfirmed() then
+    result = calendarMonth.selected
+  else
+    result = nil
+  end
 
   return result
 end
