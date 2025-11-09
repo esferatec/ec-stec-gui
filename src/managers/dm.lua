@@ -71,7 +71,7 @@ end
 function DataManager:load()
   for _, child in ipairs(self.children) do
     local sourceValue = self.source[child.field]
-    child.widget[child.property] = sourceValue
+    child.widget[child.property] = sourceValue and sourceValue or child.default
   end
 end
 
