@@ -1,57 +1,38 @@
 -- Defines a data management module.
-local dm = {} -- version 1.0
+local dm = {} -- version 2025.11
 
 -- Checks if the parameter is a valid child widget.
 -- isValidChild(parameter: any) -> boolean
 local function isValidChild(parameter)
   local invalidTypes = {
-    "nil",
-    "boolean",
-    "number",
-    "string",
-    "userdata",
-    "function",
-    "thread" }
+    ["nil"] = true,
+    ["boolean"] = true,
+    ["number"] = true,
+    ["string"] = true,
+    ["userdata"] = true,
+    ["function"] = true,
+    ["thread"] = true
+  }
 
-  return not table.concat(invalidTypes, ","):find(type(parameter))
+  return not invalidTypes[type(parameter)]
 end
 
 -- Checks if the parameter is a string type.
--- isString(parameter: any) -> boolean
-local function isString(parameter)
+-- isStringType(parameter: any) -> boolean
+local function isStringType(parameter)
   return type(parameter) == "string"
 end
 
--- Checks if the parameter is a number type.
--- isNumber(parameter: any) -> boolean
-local function isNumber(parameter)
-  return type(parameter) == "number"
+-- Checks if the paramter is a function type.
+-- isFunctionType(parameter: any) -> boolean
+local function isFunctionType(parameter)
+  return type(parameter) == "function"
 end
 
--- Checks if the parameter is a boolean type.
--- isBoolean(parameter: any) -> boolean
-local function isBoolean(parameter)
-  return type(parameter) == "boolean"
-end
-
--- Checks if the parameter is a database type.
--- isDatabase(parameter: any) -> boolean
-local function isDatabase(parameter)
-  return type(parameter) == "Database"
-end
-
--- Conparameterert a number or string to boolean
--- toboolean(parameter: any) -> boolean
-local function toboolean(parameter)
-  if isNumber(parameter) then
-    return parameter ~= 0
-  end
-
-  if isString(parameter) then
-    return parameter:lower() == "true"
-  end
-
-  return false
+-- Checks if the parameter is a nil type.
+-- isNilType(parameter: any) -> boolean
+local function isNilType(parameter)
+  return type(parameter) == "nil"
 end
 
 -- Defines the data manager object.
@@ -59,140 +40,76 @@ local DataManager = Object({})
 
 -- Creates the data manager constructor.
 function DataManager:constructor()
-  local _database = {}
-
-  function self:set_database(value)
-    if not isDatabase(value) then
-      value = nil
-    end
-
-    _database = value
-  end
-
-  function self:get_database()
-    return _database
-  end
-
-  local _datatable = {}
-
-  function self:set_datatable(value)
-    if not isString(value) then
-      value = nil
-    end
-
-    _datatable = value
-  end
-
-  function self:get_datatable()
-    return _datatable
-  end
-
+  self.source = {}
   self.children = {}
-  self.key = -1
 end
 
--- Adds a field, widget, property and default value.
--- add(field: string, widget: object, property: string) -> none
-function DataManager:add(field, widget, property, default)
-  if not isString(field) then return end
+-- Adds a widget, widget property, source field, field converter and default value.
+-- add(widget: object, property: string, field: string, converter: function, default: any) -> none
+function DataManager:add(widget, property, field, converter, default)
   if not isValidChild(widget) then return end
-  if not isString(property) then return end
+  if not isStringType(property) then return end
+  if not isStringType(field) then return end
+  if not isNilType(converter) and not isFunctionType(converter) then return end
+  if not isStringType(property) then return end
+  if property == "" then return end
+  if field == "" then return end
 
   local newChild = {
-    field = field,
     widget = widget,
     property = property,
+    field = field,
+    converter = converter,
     default = default
   }
 
   table.insert(self.children, newChild)
 end
 
--- Sets default value for each widget.
--- apply() -> none
-function DataManager:apply()
+-- Loads the source value for each widget.
+-- load() -> none
+function DataManager:load()
+  for _, child in ipairs(self.children) do
+    local sourceValue = self.source[child.field]
+    child.widget[child.property] = sourceValue
+  end
+end
+
+-- Saves the source value for each widget.
+-- save() -> none
+function DataManager:save()
+  for _, child in ipairs(self.children) do
+    local widgetValue = child.widget[child.property]
+    self.source[child.field] = child.converter and child.converter(widgetValue) or widgetValue
+  end
+end
+
+-- Sets the default value for each widget.
+-- default() -> none
+function DataManager:default()
   for _, child in ipairs(self.children) do
     child.widget[child.property] = child.default
   end
-
-  self.key = -1
 end
 
--- Selects a row of the table.
--- select(record: number) -> none
-function DataManager:select(record)
-  if not isNumber(record) then return end
-
-  local statement = string.format("SELECT * FROM %s ORDER BY id ASC LIMIT 1 OFFSET %d;", self.datatable, record)
-
-  local row = self.database:exec(statement)
-
-  for _, child in ipairs(self.children) do
-    if isBoolean(child.widget[child.property]) then
-      child.widget[child.property] = toboolean(row[child.field])
-      goto nextchild
-    end
-
-    if isString(child.widget[child.property]) then
-      child.widget[child.property] = tostring(row[child.field])
-      goto nextchild
-    end
-
-    if isNumber(child.widget[child.property]) then
-      child.widget[child.property] = tonumber(row[child.field])
-      goto nextchild
-    end
-
-    ::nextchild::
-  end
-
-  self.key = row["id"]
+-- Gets the source value for a field.
+-- value(field: string) -> any
+function DataManager:value(field)
+  if not isStringType(field) then return end
+  if field == "" then return end
+  return self.source[field] or nil
 end
 
--- Insert a record to the database table.
--- insert() -> none
-function DataManager:insert()
-  local fields = {}
-  local values = {}
-
-  for _, child in ipairs(self.children) do
-    table.insert(fields, child.field)
-    table.insert(values, "'" .. tostring(child.widget[child.property]) .. "'")
-  end
-
-  local fieldStr = table.concat(fields, ", ")
-  local valueStr = table.concat(values, ", ")
-
-  local statement = string.format("INSERT INTO %s (%s) VALUES (%s);", self.datatable, fieldStr, valueStr)
-
-  self.database:exec(statement)
-end
-
--- Update a record of the database table.
--- update() -> none
-function DataManager:update()
-  local updates = {}
-
-  for _, child in ipairs(self.children) do
-    table.insert(updates, child.field .. " = '" .. tostring(child.widget[child.property]) .. "'")
-  end
-
-  local updateString = table.concat(updates, ", ")
-
-  local statement = string.format("UPDATE %s SET %s WHERE id = %d", self.datatable, updateString, self.key)
-
-  self.database:exec(statement)
-end
-
--- Delete a record from the database table.
--- delete() -> none
-function DataManager:delete()
-  local statement = string.format("DELETE FROM %s WHERE id = %d;", self.datatable, self.key)
-  self.database:exec(statement)
+-- Updates the source value for a field.
+-- update(field: string, value: any) -> none
+function DataManager:update(field, value)
+  if not isStringType(field) then return end
+  if field == "" then return end
+  self.source[field] = value
 end
 
 -- Initializes a new data manager instance.
--- DataManager() -> object
+-- dataManager() -> object
 function dm.DataManager()
   return DataManager()
 end

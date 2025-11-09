@@ -6,7 +6,6 @@ local sys = require("sys")
 
 local dm = require("managers.dm") -- data manager
 local gm = require("managers.gm") -- geometry manager
-local km = require("managers.km") -- key manager
 local mm = require("managers.mm") -- menu manager
 local vm = require("managers.vm") -- validation manager
 local wm = require("managers.wm") -- widget manager
@@ -58,7 +57,7 @@ local MenuBurger = ui.Menu("Setup", "Help", "About", "", "Exit")
 
 --#region Window
 
-local Window     = ui.Window("ecSTEC", "single", 700, 550)
+local Window     = ui.Window("ecSTEC", "single", 700, 630)
 Window.bgcolor   = 0xa3c2c2
 Window.modified  = false
 Window.menu      = ui.Menu()
@@ -76,14 +75,14 @@ Window.GM_FILE_ENTRY         = gm.GeometryManager():ColumnLayout(Window, gm.DIRE
 Window.GM_SCRIPT_LABEL       = gm.GeometryManager():ColumnLayout(Window, gm.DIRECTION.Top, 12, 15, 136, 95, 116)
 Window.GM_SCRIPT_ENTRY       = gm.GeometryManager():ColumnLayout(Window, gm.DIRECTION.Top, 8, 120, 132, 565, 116)
 Window.GM_MODULE_LABEL       = gm.GeometryManager():ColumnLayout(Window, gm.DIRECTION.Top, 12, 15, 277, 95, 44)
-Window.GM_MODULE_CHECKBOX    = gm.GeometryManager():MatrixLayout(Window, 5, 3, gm.RESIZE.None, 0, 120, 277, 565, 66)
-Window.GM_GENERATE_BUTTON    = gm.GeometryManager():SingleLayout(Window, gm.RESIZE.None, 15, 364, 670, 40)
-Window.GM_TOOLBAR_BUTTON     = gm.GeometryManager():RowLayout(Window, gm.DIRECTION.left, 10, 15, 446, 670, 34)
-Window.KM                    = km.KeyManager()
+Window.GM_MODULE_CHECKBOX    = gm.GeometryManager():MatrixLayout(Window, 5, 4, gm.RESIZE.None, 0, 120, 277, 565, 100)
+Window.GM_TOOLBAR_BUTTON     = gm.GeometryManager():RowLayout(Window, gm.DIRECTION.Left, 10, 15, 402, 670, 34)
+Window.GM_TOOLS_LABEL        = gm.GeometryManager():ColumnLayout(Window, gm.DIRECTION.Top, 12, 15, 470, 95, 116)
+Window.GM_TOOLS_ENTRY        = gm.GeometryManager():ColumnLayout(Window, gm.DIRECTION.Top, 8, 120, 466, 565, 116)
 Window.MM                    = mm.MenuManager()
-Window.VM                    = vm.ValidationManager()
+Window.VM_SAVE               = vm.ValidationManager()
+Window.VM_GENERATE           = vm.ValidationManager()
 Window.WM                    = wm.WidgetManager()
-Window.WM_ZERO               = wm.WidgetManager()
 Window.WM_MODULES            = wm.WidgetManager()
 
 --#endregion
@@ -126,18 +125,22 @@ local CheckboxModuleSysutils = ui.Checkbox(Window, "sysutils", 0, 0, 20, 999)
 local CheckboxModuleKeyboard = ui.Checkbox(Window, "keyboard", 0, 0, 20, 999)
 local CheckboxModuleSerial   = ui.Checkbox(Window, "serial", 0, 0, 20, 999)
 local CheckboxModuleC        = ui.Checkbox(Window, "C", 0, 0, 20, 999)
+local CheckboxModuleCpu      = ui.Checkbox(Window, "cpu", 0, 0, 20, 999)
+local CheckboxModulePower    = ui.Checkbox(Window, "power", 0, 0, 20, 999)
+local CheckboxModuleUi       = ui.Checkbox(Window, "ui", 0, 0, 20, 999)
+local CheckboxModuleWifi     = ui.Checkbox(Window, "wifi", 0, 0, 20, 999)
+local CheckboxModuleXml      = ui.Checkbox(Window, "xml", 0, 0, 20, 999)
+local CheckboxModuleYaml     = ui.Checkbox(Window, "yaml", 0, 0, 20, 999)
 
-local ButtonGenerate         = ui.Button(Window, "Generate", 0, 0, 999, 999)
+local ButtonGenerate         = ui.Button(Window, "Generate", 0, 0, 330, 999)
+local ButtonSave             = ui.Button(Window, "Save", 0, 0, 330, 999)
 
-local ButtonFirst            = ui.Button(Window, "|<", 0, 0, 55, 999)
-local ButtonPrevious         = ui.Button(Window, "<", 0, 0, 55, 999)
-local ButtonGoto             = ui.Button(Window, "(   )", 0, 0, 70, 999)
-local ButtonNext             = ui.Button(Window, ">", 0, 0, 55, 999)
-local ButtonLast             = ui.Button(Window, ">|", 0, 0, 55, 999)
-local ButtonNew              = ui.Button(Window, "New", 0, 0, 75, 999)
-local ButtonSave             = ui.Button(Window, "Save", 0, 0, 75, 999)
-local ButtonCancel           = ui.Button(Window, "Cancel", 0, 0, 75, 999)
-local ButtonDelete           = ui.Button(Window, "Delete", 0, 0, 75, 999)
+local LabelScriptCompiler    = ui.Label(Window, "Script Compiler", 0, 0, 999, 20)
+local EntryScriptCompiler    = uiextension.FileEntry(Window, "", 0, 0, 999, 24)
+local LabelModuleDirectory   = ui.Label(Window, "Module Directory", 0, 0, 999, 20)
+local EntryModuleDirectory   = uiextension.DirectoryEntry(Window, "", 0, 0, 999, 24)
+local LabelPropertyTool      = ui.Label(Window, "Property Tool", 0, 0, 999, 20)
+local EntryPropertyTool      = uiextension.FileEntry(Window, "", 0, 0, 999, 24)
 
 --#endregion
 
@@ -172,29 +175,34 @@ Window.GM_SCRIPT_ENTRY:add(EntryOutputFile)
 Window.GM_MODULE_LABEL:add(LabelEmbededModules)
 
 Window.GM_MODULE_CHECKBOX:add(CheckboxModuleAudio)
+Window.GM_MODULE_CHECKBOX:add(CheckboxModuleC)
 Window.GM_MODULE_CHECKBOX:add(CheckboxModuleCanvas)
+Window.GM_MODULE_CHECKBOX:add(CheckboxModuleCpu)
 Window.GM_MODULE_CHECKBOX:add(CheckboxModuleCrypto)
 Window.GM_MODULE_CHECKBOX:add(CheckboxModuleIni)
 Window.GM_MODULE_CHECKBOX:add(CheckboxModuleJson)
-Window.GM_MODULE_CHECKBOX:add(CheckboxModuleNet)
-Window.GM_MODULE_CHECKBOX:add(CheckboxModuleSqlite)
-Window.GM_MODULE_CHECKBOX:add(CheckboxModuleWebview)
-Window.GM_MODULE_CHECKBOX:add(CheckboxModuleSysutils)
 Window.GM_MODULE_CHECKBOX:add(CheckboxModuleKeyboard)
+Window.GM_MODULE_CHECKBOX:add(CheckboxModuleNet)
+Window.GM_MODULE_CHECKBOX:add(CheckboxModulePower)
 Window.GM_MODULE_CHECKBOX:add(CheckboxModuleSerial)
-Window.GM_MODULE_CHECKBOX:add(CheckboxModuleC)
+Window.GM_MODULE_CHECKBOX:add(CheckboxModuleSqlite)
+Window.GM_MODULE_CHECKBOX:add(CheckboxModuleSysutils)
+Window.GM_MODULE_CHECKBOX:add(CheckboxModuleUi)
+Window.GM_MODULE_CHECKBOX:add(CheckboxModuleWebview)
+Window.GM_MODULE_CHECKBOX:add(CheckboxModuleWifi)
+Window.GM_MODULE_CHECKBOX:add(CheckboxModuleXml)
+Window.GM_MODULE_CHECKBOX:add(CheckboxModuleYaml)
 
-Window.GM_GENERATE_BUTTON:add(ButtonGenerate)
-
-Window.GM_TOOLBAR_BUTTON:add(ButtonFirst)
-Window.GM_TOOLBAR_BUTTON:add(ButtonPrevious)
-Window.GM_TOOLBAR_BUTTON:add(ButtonGoto)
-Window.GM_TOOLBAR_BUTTON:add(ButtonNext)
-Window.GM_TOOLBAR_BUTTON:add(ButtonLast)
-Window.GM_TOOLBAR_BUTTON:add(ButtonNew)
 Window.GM_TOOLBAR_BUTTON:add(ButtonSave)
-Window.GM_TOOLBAR_BUTTON:add(ButtonCancel)
-Window.GM_TOOLBAR_BUTTON:add(ButtonDelete)
+Window.GM_TOOLBAR_BUTTON:add(ButtonGenerate)
+
+Window.GM_TOOLS_LABEL:add(LabelScriptCompiler)
+Window.GM_TOOLS_LABEL:add(LabelModuleDirectory)
+Window.GM_TOOLS_LABEL:add(LabelPropertyTool)
+
+Window.GM_TOOLS_ENTRY:add(EntryScriptCompiler)
+Window.GM_TOOLS_ENTRY:add(EntryModuleDirectory)
+Window.GM_TOOLS_ENTRY:add(EntryPropertyTool)
 
 --#endregion
 
@@ -203,49 +211,18 @@ Window.GM_TOOLBAR_BUTTON:add(ButtonDelete)
 Window.WM:add(EntryProjectName, "EntryProjectName")
 Window.WM:add(EntryProductName, "EntryProductName")
 Window.WM:add(EntryProductVersion, "EntryProductVersion")
-
 Window.WM:add(EntryFileVersion, "EntryFileVersion")
 Window.WM:add(EntryFileDescription, "EntryFileDescription")
 Window.WM:add(EntryLegalCopyright, "EntryLegalCopyright")
-
 Window.WM:add(EntryScriptFile, "EntryScriptFile")
 Window.WM:add(EntryScriptDirectory, "EntryScriptDirectory")
 Window.WM:add(EntryIconFile, "EntryIconFile")
 Window.WM:add(EntryOutputFile, "EntryOutputFile")
-
-Window.WM:add(CheckboxModuleAudio, "CheckboxModuleAudio")
-Window.WM:add(CheckboxModuleCanvas, "CheckboxModuleCanvas")
-Window.WM:add(CheckboxModuleCrypto, "CheckboxModuleCrypto")
-Window.WM:add(CheckboxModuleIni, "CheckboxModuleIni")
-Window.WM:add(CheckboxModuleJson, "CheckboxModuleJson")
-Window.WM:add(CheckboxModuleNet, "CheckboxModuleNet")
-Window.WM:add(CheckboxModuleSqlite, "CheckboxModuleSqlite")
-Window.WM:add(CheckboxModuleWebview, "CheckboxModuleWebview")
-Window.WM:add(CheckboxModuleSysutils, "CheckboxModuleSysutils")
-Window.WM:add(CheckboxModuleKeyboard, "CheckboxModuleKeyboard")
-Window.WM:add(CheckboxModuleSerial, "CheckboxModuleSerial")
-Window.WM:add(CheckboxModuleC, "CheckboxModuleC")
-
+Window.WM:add(EntryScriptCompiler, "EntryScriptCompiler")
+Window.WM:add(EntryModuleDirectory, "EntryModuleDirectory")
+Window.WM:add(EntryPropertyTool, "EntryPropertyTool")
 Window.WM:add(ButtonGenerate, "ButtonGenerate")
-
-Window.WM:add(ButtonFirst, "ButtonFirst")
-Window.WM:add(ButtonPrevious, "ButtonPrevious")
-Window.WM:add(ButtonGoto, "ButtonGoto")
-Window.WM:add(ButtonNext, "ButtonNext")
-Window.WM:add(ButtonLast, "ButtonLast")
-Window.WM:add(ButtonNew, "ButtonNew")
 Window.WM:add(ButtonSave, "ButtonSave")
-Window.WM:add(ButtonCancel, "ButtonCancel")
-Window.WM:add(ButtonDelete, "ButtonDelete")
-
-Window.WM_ZERO:add(ButtonGenerate, "ButtonGenerate")
-Window.WM_ZERO:add(ButtonFirst, "ButtonFirst")
-Window.WM_ZERO:add(ButtonPrevious, "ButtonPrevious")
-Window.WM_ZERO:add(ButtonGoto, "ButtonGoto")
-Window.WM_ZERO:add(ButtonNext, "ButtonNext")
-Window.WM_ZERO:add(ButtonLast, "ButtonLast")
-Window.WM_ZERO:add(ButtonNew, "ButtonNew")
-Window.WM_ZERO:add(ButtonDelete, "ButtonDelete")
 
 Window.WM_MODULES:add(CheckboxModuleAudio, "CheckboxModuleAudio")
 Window.WM_MODULES:add(CheckboxModuleCanvas, "CheckboxModuleCanvas")
@@ -259,6 +236,12 @@ Window.WM_MODULES:add(CheckboxModuleSysutils, "CheckboxModuleSysutils")
 Window.WM_MODULES:add(CheckboxModuleKeyboard, "CheckboxModuleKeyboard")
 Window.WM_MODULES:add(CheckboxModuleSerial, "CheckboxModuleSerial")
 Window.WM_MODULES:add(CheckboxModuleC, "CheckboxModuleC")
+Window.WM_MODULES:add(CheckboxModuleCpu, "CheckboxModuleCpu")
+Window.WM_MODULES:add(CheckboxModulePower, "CheckboxModulePower")
+Window.WM_MODULES:add(CheckboxModuleUi, "CheckboxModuleUi")
+Window.WM_MODULES:add(CheckboxModuleWifi, "CheckboxModuleWifi")
+Window.WM_MODULES:add(CheckboxModuleXml, "CheckboxModuleXml")
+Window.WM_MODULES:add(CheckboxModuleYaml, "CheckboxModuleYaml")
 
 --#endregion
 
@@ -271,66 +254,59 @@ Window.MM:add(MenuBurger.items[5], "BurgerExit")
 
 --#endregion
 
---#region KeyManager
-
-Window.KM:add(ButtonFirst, "VK_HOME")
-Window.KM:add(ButtonPrevious, "VK_PRIOR")
-Window.KM:add(ButtonGoto, "VK_F2")
-Window.KM:add(ButtonNext, "VK_NEXT")
-Window.KM:add(ButtonLast, "VK_END")
-Window.KM:add(ButtonNew, "VK_F3")
-Window.KM:add(ButtonSave, "VK_F4")
-Window.KM:add(ButtonCancel, "VK_F5")
-Window.KM:add(ButtonDelete, "VK_F6")
-Window.KM:add(ButtonGenerate, "VK_F7")
-
---#endregion
-
 --#region ValidationManager
 
-Window.VM:add(EntryProjectName, "text", isRequired, "Please enter a project name.")
+Window.VM_SAVE:add(EntryProjectName, "text", isRequired, "Please enter a project name.")
 
-Window.VM:add(EntryScriptFile, "text", isRequired, "Please enter a script file.")
-Window.VM:add(EntryScriptFile, "text", isValidScriptFile, "Please enter a lua or wlua file.")
-Window.VM:add(EntryScriptFile, "text", isValidFile, "Please enter a script file that exists.")
-
-Window.VM:add(EntryScriptDirectory, "text", isValidDirectory, "Please enter a script directory that exists.")
-
-Window.VM:add(EntryIconFile, "text", isValidIconFile, "Please enter a ico file.")
-Window.VM:add(EntryIconFile, "text", isValidFile, "Please enter a icon file that exists.")
-
-Window.VM:add(EntryOutputFile, "text", isRequired, "Please enter a output file.")
-Window.VM:add(EntryOutputFile, "text", isValidOutputFile, "Please enter a exe file.")
+Window.VM_GENERATE:add(EntryProjectName, "text", isRequired, "Please enter a project name.")
+Window.VM_GENERATE:add(EntryScriptFile, "text", isRequired, "Please enter a script file.")
+Window.VM_GENERATE:add(EntryScriptFile, "text", isValidScriptFile, "Please enter a lua or wlua file.")
+Window.VM_GENERATE:add(EntryScriptFile, "text", isValidFile, "Please enter a script file that exists.")
+Window.VM_GENERATE:add(EntryScriptDirectory, "text", isValidDirectory, "Please enter a script directory that exists.")
+Window.VM_GENERATE:add(EntryIconFile, "text", isValidIconFile, "Please enter a ico file.")
+Window.VM_GENERATE:add(EntryIconFile, "text", isValidFile, "Please enter a icon file that exists.")
+Window.VM_GENERATE:add(EntryOutputFile, "text", isRequired, "Please enter a output file.")
+Window.VM_GENERATE:add(EntryOutputFile, "text", isValidOutputFile, "Please enter a exe file.")
+Window.VM_GENERATE:add(EntryScriptCompiler, "text", isRequired, "Please enter a script compiler.")
+Window.VM_GENERATE:add(EntryScriptCompiler, "text", isValidFile, "Please enter a script compiler that exists.")
+Window.VM_GENERATE:add(EntryModuleDirectory, "text", isRequired, "Please enter a module directory.")
+Window.VM_GENERATE:add(EntryModuleDirectory, "text", isValidDirectory, "Please enter a module directory that exists.")
 
 --#endregion
 
 --#region DataManager
 
-Window.DM:add("projectname", EntryProjectName, "text", "")
-Window.DM:add("productname", EntryProductName, "text", "")
-Window.DM:add("productversion", EntryProductVersion, "text", "")
-
-Window.DM:add("filedescription", EntryFileDescription, "text", "")
-Window.DM:add("fileversion", EntryFileVersion, "text", "")
-Window.DM:add("legalcopyright", EntryLegalCopyright, "text", "")
-
-Window.DM:add("scriptfile", EntryScriptFile, "text", "")
-Window.DM:add("scriptdirectory", EntryScriptDirectory, "text", "")
-Window.DM:add("iconfile", EntryIconFile, "text", "")
-Window.DM:add("outputfile", EntryOutputFile, "text", "")
-
-Window.DM:add("moduleaudio", CheckboxModuleAudio, "checked", false)
-Window.DM:add("modulecanvas", CheckboxModuleCanvas, "checked", false)
-Window.DM:add("modulecrypto", CheckboxModuleCrypto, "checked", false)
-Window.DM:add("moduleini", CheckboxModuleIni, "checked", false)
-Window.DM:add("modulejson", CheckboxModuleJson, "checked", false)
-Window.DM:add("modulenet", CheckboxModuleNet, "checked", false)
-Window.DM:add("modulesqlite", CheckboxModuleSqlite, "checked", false)
-Window.DM:add("modulewebview", CheckboxModuleWebview, "checked", false)
-Window.DM:add("modulesysutils", CheckboxModuleSysutils, "checked", false)
-Window.DM:add("modulekeyboard", CheckboxModuleKeyboard, "checked", false)
-Window.DM:add("moduleserial", CheckboxModuleSerial, "checked", false)
-Window.DM:add("modulec", CheckboxModuleC, "checked", false)
+Window.DM:add(EntryProjectName, "text", "projectname", nil, "")
+Window.DM:add(EntryProductName, "text", "productname", nil, "")
+Window.DM:add(EntryProductVersion, "text", "productversion", nil, "")
+Window.DM:add(EntryFileDescription, "text", "filedescription", nil, "")
+Window.DM:add(EntryFileVersion, "text", "fileversion", nil, "")
+Window.DM:add(EntryLegalCopyright, "text", "legalcopyright", nil, "")
+Window.DM:add(EntryScriptFile, "text", "scriptfile", nil, "")
+Window.DM:add(EntryScriptDirectory, "text", "scriptdirectory", nil, "")
+Window.DM:add(EntryIconFile, "text", "iconfile", nil, "")
+Window.DM:add(EntryOutputFile, "text", "outputfile", nil, "")
+Window.DM:add(CheckboxModuleAudio, "checked", "moduleaudio", nil, false)
+Window.DM:add(CheckboxModuleCanvas, "checked", "modulecanvas", nil, false)
+Window.DM:add(CheckboxModuleCrypto, "checked", "modulecrypto", nil, false)
+Window.DM:add(CheckboxModuleIni, "checked", "moduleini", nil, false)
+Window.DM:add(CheckboxModuleJson, "checked", "modulejson", nil, false)
+Window.DM:add(CheckboxModuleNet, "checked", "modulenet", nil, false)
+Window.DM:add(CheckboxModuleSqlite, "checked", "modulesqlite", nil, false)
+Window.DM:add(CheckboxModuleWebview, "checked", "modulewebview", nil, false)
+Window.DM:add(CheckboxModuleSysutils, "checked", "modulesysutils", nil, false)
+Window.DM:add(CheckboxModuleKeyboard, "checked", "modulekeyboard", nil, false)
+Window.DM:add(CheckboxModuleSerial, "checked", "moduleserial", nil, false)
+Window.DM:add(CheckboxModuleC, "checked", "modulec", nil, false)
+Window.DM:add(CheckboxModuleCpu, "checked", "cpu", nil, false)
+Window.DM:add(CheckboxModulePower, "checked", "power", nil, false)
+Window.DM:add(CheckboxModuleUi, "checked", "ui", nil, false)
+Window.DM:add(CheckboxModuleWifi, "checked", "wifi", nil, false)
+Window.DM:add(CheckboxModuleXml, "checked", "xml", nil, false)
+Window.DM:add(CheckboxModuleYaml, "checked", "yaml", nil, false)
+Window.DM:add(EntryScriptCompiler, "text", "scriptcompiler", nil, "C:\\LuaRT\\rtc.exe")
+Window.DM:add(EntryModuleDirectory, "text", "moduledirectory", nil, "C:\\LuaRT\\modules")
+Window.DM:add(EntryPropertyTool, "text", "propertytool", nil, "C:\\LuaRT\\rcedit.exe")
 
 --#endregion
 
@@ -339,37 +315,7 @@ Window.DM:add("modulec", CheckboxModuleC, "checked", false)
 Window.GM_PRODUCT_ENTRY:change("fontsize", 10)
 Window.GM_FILE_ENTRY:change("fontsize", 10)
 Window.GM_SCRIPT_ENTRY:change("fontsize", 10)
-
-ButtonFirst.tooltip = "HOME"
-ButtonPrevious.tooltip = "RIOR"
-ButtonGoto.tooltip = "F2"
-ButtonNext.tooltip = "NEXT"
-ButtonLast.tooltip = "END"
-ButtonNew.tooltip = "F3"
-ButtonSave.tooltip = "F4"
-ButtonCancel.tooltip = "F5"
-ButtonDelete.tooltip = "F6"
-ButtonGenerate.tooltip = "F7"
-
---#endregion
-
---#region Events
-
-Window.GM_PRODUCT_ENTRY:change("onChange", function(self)
-  ButtonSave.fontstyle = self.modified and { bold = true } or { bold = false }
-end)
-
-Window.GM_FILE_ENTRY:change("onChange", function(self)
-  ButtonSave.fontstyle = self.modified and { bold = true } or { bold = false }
-end)
-
-Window.GM_SCRIPT_ENTRY:change("onChange", function(self)
-  ButtonSave.fontstyle = self.modified and { bold = true } or { bold = false }
-end)
-
-Window.GM_MODULE_CHECKBOX:change("onClick", function(self)
-  ButtonSave.fontstyle = { bold = true }
-end)
+Window.GM_TOOLS_ENTRY:change("fontsize", 10)
 
 --#endregion
 

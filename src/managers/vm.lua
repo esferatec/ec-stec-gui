@@ -1,31 +1,31 @@
 -- Defines a validation management module.
-local vm = {} -- version 2025.04
+local vm = {} -- version 2025.11
 
 -- Checks if the parameter is a valid child widget.
 -- isValidChild(parameter: any) -> boolean
 local function isValidChild(parameter)
   local invalidTypes = {
-    "nil",
-    "boolean",
-    "number",
-    "string",
-    "userdata",
-    "function",
-    "thread"
+    ["nil"] = true,
+    ["boolean"] = true,
+    ["number"] = true,
+    ["string"] = true,
+    ["userdata"] = true,
+    ["function"] = true,
+    ["thread"] = true
   }
 
-  return not table.concat(invalidTypes, ","):find(type(parameter))
+  return not invalidTypes[type(parameter)]
 end
 
 -- Checks if the parameter is a string type.
 -- isString(parameter: any) -> boolean
-local function isString(parameter)
+local function isStringType(parameter)
   return type(parameter) == "string"
 end
 
 -- Checks if the paramter is a function type.
 -- isFunction(parameter: any) -> boolean
-local function isFunction(parameter)
+local function isFunctionType(parameter)
   return type(parameter) == "function"
 end
 
@@ -39,13 +39,14 @@ function ValidationManager:constructor()
   self.children = {}
 end
 
--- Adds a widget, property, validation rule and error message.
+-- Adds a widget, widget property, validation rule and error message.
 -- add(widget: object, property: string, rule: function, message: string) -> none
 function ValidationManager:add(widget, property, rule, message)
   if not isValidChild(widget) then return end
-  if not isString(property) then return end
-  if not isFunction(rule) then return end
-  if not isString(message) then return end
+  if not isStringType(property) then return end
+  if not isFunctionType(rule) then return end
+  if not isStringType(message) then return end
+  if property == "" then return end
 
   local newChild = {
     widget = widget,
@@ -58,8 +59,8 @@ function ValidationManager:add(widget, property, rule, message)
 end
 
 -- Performs validation checks for each widget.
--- apply() -> none
-function ValidationManager:apply()
+-- validate() -> none
+function ValidationManager:validate()
   self.isvalid = true
   self.message = {}
 

@@ -56,7 +56,7 @@ function toboolean(v)
       return v:lower() == "true"
    end
 
-   return false
+   return v
 end
 
 --#endregion
