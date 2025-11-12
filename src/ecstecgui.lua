@@ -107,6 +107,37 @@ end
 --#endregion
 
 --#region button events
+function win.WM.children.ButtonNew:onClick()
+  win.DM.source = {}
+  win.DM:default()
+  win:updatestatus()
+end
+
+function win.WM.children.ButtonUpdate:onClick()
+  win.VM_SAVE:validate()
+
+  if not win.VM_SAVE.isvalid then
+    local message = ""
+
+    for _, text in ipairs(win.VM_SAVE.message) do
+      message = message .. text .. "\n"
+    end
+
+    ui.warn(message, app.TITLE.warning)
+    return
+  end
+
+  win.DM:save()
+
+  local saved, retval = pcall(json.save, app.FILE.fullpath, win.DM.source)
+
+  if not saved then
+    ui.error(retval, app.TITLE.error)
+    return
+  end
+
+  win:updatestatus()
+end
 
 function win.WM.children.ButtonSave:onClick()
   win.VM_SAVE:validate()
