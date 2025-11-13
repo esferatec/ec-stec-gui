@@ -3,7 +3,7 @@ local sys = require("sys")
 local app = {}
 
 app.NAME = "ecSTECGUI"
-app.VERSION = "0.2.0"
+app.VERSION = "0.2.1"
 app.WEBSITE = "https://github.com/esferatec/ec-stec-gui"
 app.COPYRIGHT = "(c) 2025"
 app.DEVELOPER = "esferatec"
